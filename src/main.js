@@ -1,4 +1,3 @@
-/*global PIXI*/
 (function () {
     // You can use either `new PIXI.WebGLRenderer`, `new PIXI.CanvasRenderer`, or `PIXI.autoDetectRenderer`
     // which will try to choose the best renderer for the environment you are in.
@@ -18,8 +17,8 @@
     bunny.position.x = 400;
     bunny.position.y = 300;
 
-    bunny.scale.x = 2;
-    bunny.scale.y = 2;
+    bunny.scale.x = 0.5;
+    bunny.scale.y = 0.5;
 
     // Add the bunny to the scene we are building.
     stage.addChild(bunny);
