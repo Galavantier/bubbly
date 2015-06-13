@@ -24,6 +24,7 @@
                    .addComponent( new ECS.Components.AutoForce() );
 
   game.fluid   = new ECS.Entity()
+                   .addComponent( new ECS.Components.BoundingBox() )
                    .addComponent( new ECS.Components.ParticleSystem() );
 
   game.tray    = ECS.Assemblages.PhysicalThing(new ECS.Entity());
@@ -37,6 +38,7 @@
   game.world.components.BoundingBox.height = window.innerHeight - 20;
   var gameDims = game.world.components.BoundingBox;
   game.hand.components.BoundingBox = gameDims;
+  game.fluid.components.BoundingBox = gameDims;
 
   var initComponents = function(entity, settings) {
     entity.components.Sprite.imgSrc = settings.imgSrc;
@@ -61,7 +63,7 @@
   });
 
   game.fluid.components.ParticleSystem.emitter = game.bottle;
-  game.fluid.components.ParticleSystem.offset = ecsVec2(113.6, 0);
+  game.fluid.components.ParticleSystem.offset = ecsVec2(0, 0);
 
   var startingPos =  {
     x : gameDims.width / 2,
