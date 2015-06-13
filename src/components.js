@@ -1,7 +1,7 @@
-var ecsVec2 = function() {
+var ecsVec2 = function(x, y) {
   return {
-    x : 0,
-    y : 0
+    x : (typeof x !== "undefined") ? x : 0,
+    y : (typeof y !== "undefined") ? y : 0
   };
 };
 
@@ -40,7 +40,7 @@ ECS.Component("Fillable", function(){
 });
 
 ECS.Component("AutoForce", function(){
-  this.forceType = "";
+  this.type = "";
 });
 
 ECS.Component("Sprite", function(){

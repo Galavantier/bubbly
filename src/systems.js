@@ -10,6 +10,53 @@ ecsPixiGetContainer = function(entity) {
   return null;
 };
 
+ECS.System("UserInput", ["MouseControl", "Position", "BoundingBox"],
+  //Step
+  function(entity){
+    if(entity.oldX !== entity.components.MouseControl.position.x) {
+      entity.components.Position.x += entity.components.MouseControl.velocity.x; //+ entity.components.MouseControl.accel.x / 2;
+      if(entity.components.Position.x > entity.components.BoundingBox.width) {
+        entity.components.Position.x = entity.components.BoundingBox.width;
+      }
+      if(entity.components.Position.x < 0){
+        entity.components.Position.x = 0;
+      }
+    }
+    entity.oldX = entity.components.MouseControl.position.x;
+  },
+  //Init
+  function(entity) {
+    var down = false;
+    document.body.addEventListener("mousedown", function(e){
+      entity.components.MouseControl.position.x = e.x;
+      entity.components.MouseControl.position.y = e.y;
+      down = true;
+    });
+    document.body.addEventListener("mousemove", function(e){
+      if(down) {
+        var oldPos = entity.components.MouseControl.position;
+        var oldVel = entity.components.MouseControl.velocity;
+        var oldAccel = entity.components.MouseControl.accel;
+
+        var newPos = ecsVec2(e.x, e.y);
+        var newVel = ecsVec2(newPos.x - oldPos.x, newPos.y - oldPos.y);
+        var newAccel = ecsVec2(newVel.x - oldVel.x, newVel.y - oldVel.y);
+
+        entity.components.MouseControl.position = newPos;
+        entity.components.MouseControl.velocity = newVel;
+        entity.components.MouseControl.accel = newAccel;
+      }
+    });
+    document.body.addEventListener("mouseup", function(e){
+      entity.components.MouseControl.velocity.x = 0;
+      entity.components.MouseControl.velocity.y = 0;
+      entity.components.MouseControl.accel.x = 0;
+      entity.components.MouseControl.accel.y = 0;
+      down = false;
+    });
+  }
+);
+
 ECS.System("PIXIRenderStage", ["BoundingBox", "Stage"],
   //Step
   function(entity){
@@ -18,6 +65,7 @@ ECS.System("PIXIRenderStage", ["BoundingBox", "Stage"],
   //Init
   function(entity){
     entity.components.Stage.renderRef = new PIXI.autoDetectRenderer(entity.components.BoundingBox.width, entity.components.BoundingBox.height);
+    entity.components.Stage.renderRef.autoResize = true;
     entity.components.Stage.root = new PIXI.Container();
 
     document.body.appendChild(entity.components.Stage.renderRef.view);
@@ -42,7 +90,7 @@ ECS.System("PIXIRenderSprite", ["Sprite", "Position", "Rotation"],
     // Set the Anchor to the center of the sprite.
     entity.components.Sprite.renderRef.sprite.anchor.x = 0.5;
     entity.components.Sprite.renderRef.sprite.anchor.x = 0.5;
-    
+
     entity.components.Sprite.renderRef.sprite.scale.x = entity.components.Sprite.scale;
     entity.components.Sprite.renderRef.sprite.scale.y = entity.components.Sprite.scale;
     entity.components.Sprite.renderRef.sprite.position.x = entity.components.Position.x;
